@@ -12,7 +12,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import SweetAlertWrapper from '../components/Layout/sweetAlert';
 // api & modal
-import { download_retailer_letter } from '../api/otogas';
+import { download_retailer_letter, download_multiple_authLetters } from '../api/otogas';
 import AddRetailerModal from './addRetailer';
 import ConfirmActionModal from './actionsModal';
 
@@ -48,7 +48,9 @@ export default function Retailers({ className }) {
   const [currentAction, setCurrentAction] = useState(null); // 'initiate', 'approve', 'reject'
   const [currentRetailerCode, setCurrentRetailerCode] = useState(null);
   const [loadingAction, setLoadingAction] = useState(false);
-  const [loadingDownloadRetailerCode, setLoadingDownloadRetailerCode] = useState(false)
+  const [loadingDownloadRetailerCode, setLoadingDownloadRetailerCode] = useState(false);
+  const [selectedRetailers, setSelectedRetailers] = useState([]);
+  const [loadingMultipleDownload, setLoadingMultipleDownload] = useState(false);
 
   // initial load
   useEffect(() => {
@@ -84,6 +86,19 @@ export default function Retailers({ className }) {
     }
   };
 
+  const handle_multiple_downloads = async (codes, func) => {
+    setLoadingMultipleDownload(true);
+    try {
+      await func(codes);
+    } catch (error) {
+      console.error('Error downloading multiple files:', error);
+      setAlertMessage({ text: 'Failed to download multiple letters.', type: 'error' });
+      setShowAlert(true);
+    } finally {
+      setLoadingMultipleDownload(false);
+    }
+  };
+
   const handleConfirm = () => {
     setShowAlert(false);
   };
@@ -113,6 +128,10 @@ export default function Retailers({ className }) {
     }
   };
 
+  const toggleRetailerSelection = (code) => {
+    setSelectedRetailers((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
+  };
+
   return (
     <Row>
       <Col sm={12}>
@@ -124,7 +143,20 @@ export default function Retailers({ className }) {
               <Button variant="primary" onClick={() => setShowAddRetailerModal(true)}>
                 Add Retailer
               </Button>
-              <Button variant="outline-secondary">Export</Button>
+              <Button
+                variant="outline-secondary"
+                onClick={() => handle_multiple_downloads(selectedRetailers, download_multiple_authLetters)}
+                disabled={selectedRetailers.length === 0 || loadingMultipleDownload}
+              >
+                {loadingMultipleDownload ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    Exporting...
+                  </>
+                ) : (
+                  'Export Selected'
+                )}
+              </Button>
             </Stack>
           }
         >
@@ -152,6 +184,19 @@ export default function Retailers({ className }) {
           <Table responsive striped className="mb-0">
             <thead>
               <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    checked={retailers.length > 0 && selectedRetailers.length === retailers.length}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedRetailers(retailers.map((r) => r.retailerCode));
+                      } else {
+                        setSelectedRetailers([]);
+                      }
+                    }}
+                  />
+                </th>
                 <th>Retailer ID</th>
                 <th>Business Name</th>
                 <th>Retailer Name</th>
@@ -164,6 +209,13 @@ export default function Retailers({ className }) {
               {retailers && retailers.length > 0 ? (
                 retailers.map((retailer) => (
                   <tr key={retailer.retailerCode}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedRetailers.includes(retailer.retailerCode)}
+                        onChange={() => toggleRetailerSelection(retailer.retailerCode)}
+                      />
+                    </td>
                     <td>{retailer.retailerCode}</td>
                     <td>{retailer.bussinessName}</td>
                     <td>{retailer.bussinessOwnerName}</td>

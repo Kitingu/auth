@@ -1619,4 +1619,16 @@ export const add_retailer_outlet = async (formData) => {
   }
 }
 
+//  'https://os.protoenergy.com/api/AuthorizationLetter/download/multiple' \
+
+export const download_multiple_authLetters = async (mbogi) => {
+ try {
+    const url = 'api/AuthorizationLetter/download/multiple'
+    downloadFile(url, "retailerAuthorizationLetter.pdf");
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
 
