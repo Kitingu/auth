@@ -11,14 +11,14 @@ import { UsersMap, EarningChart, RatingCard, RecentUsersCard } from 'sections/da
 // ===============================|| SALES PERFORMANCE CARD - DATA ||============================== //
 
 const salesPerformanceData = [
-  { title: 'Daily Sales', icon: 'ph ph-arrow-up text-success', amount: '$ 249.95', progress: { now: 67, className: 'bg-brand-color-1' } },
+  { title: 'Total Retailers', icon: '', amount: '8249', progress: { now: 100, className: 'bg-brand-color-1' } },
   {
-    title: 'Monthly Sales',
-    icon: 'ph ph-arrow-down text-danger',
-    amount: '$ 2,942.32',
-    progress: { now: 36, className: 'bg-brand-color-2' }
+    title: 'Approved Retailers',
+    icon: '',
+    amount: '8000',
+    progress: { now: 97, className: 'bg-brand-color-2' }
   },
-  { title: 'Yearly Sales', icon: 'ph ph-arrow-up text-success', amount: '$ 8,638.32', progress: { now: 80, className: 'bg-brand-color-1' } }
+  { title: 'Rejected', icon: 'ph ph-arrow-up text-danger', amount: '249', progress: { now: 3, className: 'bg-brand-color-1' } }
 ];
 
 // ===============================|| STAT INDICATOR CARD - DATA ||============================== //
@@ -135,10 +135,8 @@ export default function DefaultPage() {
       ))}
 
       {/* row - 4 */}
-      <Col md={6} xl={4}>
-        <RatingCard />
-      </Col>
-      <Col md={6} xl={8}>
+    
+      <Col md={6} xl={12}>
         <RecentUsersCard />
       </Col>
     </Row>
