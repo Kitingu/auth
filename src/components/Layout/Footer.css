@@ -1,0 +1,50 @@
+
+/*--------------------------------------------------------------
+# Back to top button
+--------------------------------------------------------------*/
+.niceadmin .back-to-top {
+  position: fixed;
+  visibility: hidden;
+  opacity: 0;
+  right: 15px;
+  bottom: 15px;
+  z-index: 99999;
+  background: #4154f1;
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  transition: all 0.4s;
+}
+.niceadmin .back-to-top i {
+  font-size: 24px;
+  color: #fff;
+  line-height: 0;
+}
+.niceadmin .back-to-top:hover {
+  background: #6776f4;
+  color: #fff;
+}
+.niceadmin .back-to-top.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+/*--------------------------------------------------------------
+# Footer
+--------------------------------------------------------------*/
+.niceadmin .footer-niceadmin {
+  padding: 20px 0;
+  font-size: 14px;
+  transition: all 0.3s;
+  border-top: 1px solid #cddfff;
+}
+.niceadmin .footer-niceadmin .copyright {
+  text-align: center;
+  color: #012970;
+}
+.niceadmin .footer-niceadmin .credits {
+  padding-top: 5px;
+  text-align: center;
+  font-size: 13px;
+  color: #012970;
+}
