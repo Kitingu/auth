@@ -239,7 +239,10 @@ const DistributorsState = (props) => {
         addDistributor,
         addRetailer,
         listRetailers,
-        addRetailerOutlet
+        addRetailerOutlet,
+        initiateAuthorizationLetter,
+        rejectAuthorizationLetter,
+        approveAuthorizationLetter
        
 
       }}

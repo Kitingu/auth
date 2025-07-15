@@ -25,7 +25,15 @@ export default function Retailers({ className }) {
   const distributorContext = useContext(DistributorContext);
   const authContext = useContext(AuthContext);
 
-  const { listRetailers, retailers, addRetailer, notification, initiateAuthorizationLetter, rejectAuthorizationLetter, approveAuthorizationLetter } = distributorContext;
+  const {
+    listRetailers,
+    retailers,
+    addRetailer,
+    notification,
+    initiateAuthorizationLetter,
+    rejectAuthorizationLetter,
+    approveAuthorizationLetter
+  } = distributorContext;
   const { user } = authContext;
 
   const [selectedRetailerCode, setSelectedRetailerCode] = useState(null);
@@ -39,6 +47,8 @@ export default function Retailers({ className }) {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentAction, setCurrentAction] = useState(null); // 'initiate', 'approve', 'reject'
   const [currentRetailerCode, setCurrentRetailerCode] = useState(null);
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [loadingDownloadRetailerCode, setLoadingDownloadRetailerCode] = useState(false)
 
   // initial load
   useEffect(() => {
@@ -63,14 +73,14 @@ export default function Retailers({ className }) {
     }
   }, [notification]);
 
-  const handle_downloads = async (func) => {
-    setLoadingSummary(true);
+  const handle_downloads = async (retailerCode, func) => {
+    setLoadingDownloadRetailerCode(retailerCode);
     try {
       await func();
     } catch (error) {
       console.error('Error downloading the file:', error);
     } finally {
-      setLoadingSummary(false);
+      setLoadingDownloadRetailerCode(null);
     }
   };
 
@@ -78,19 +88,30 @@ export default function Retailers({ className }) {
     setShowAlert(false);
   };
 
-  const handleActionConfirm = () => {
-    if (!currentRetailerCode) return;
+  const handleActionConfirm = async () => {
+    if (!currentRetailerCode || !currentAction) return;
 
-    const actions = {
-      initiate: () => initiateAuthorizationLetter([currentRetailerCode]),
-      approve: () => approveAuthorizationLetter([currentRetailerCode]),
-      reject: () => rejectAuthorizationLetter([currentRetailerCode])
-    };
+    setLoadingAction(true);
+    try {
+      const actions = {
+        initiate: () => initiateAuthorizationLetter([currentRetailerCode]),
+        approve: () => approveAuthorizationLetter([currentRetailerCode]),
+        reject: () => rejectAuthorizationLetter([currentRetailerCode])
+      };
 
-    actions[currentAction]?.();
-    setShowConfirmModal(false);
+      await actions[currentAction]?.();
+
+      setShowConfirmModal(false);
+      setCurrentAction(null);
+      setCurrentRetailerCode(null);
+    } catch (err) {
+      console.error(`Failed to ${currentAction} retailer:`, err);
+      setAlertMessage({ text: `Failed to ${currentAction} retailer.`, type: 'error' });
+      setShowAlert(true);
+    } finally {
+      setLoadingAction(false);
+    }
   };
-
 
   return (
     <Row>
@@ -150,8 +171,18 @@ export default function Retailers({ className }) {
                     <td>{retailer.phoneNumber}</td>
                     <td>
                       <DropdownButton as={ButtonGroup} title="Actions" id={`retailer-actions-${retailer.retailerCode}`} variant="secondary">
-                        <Dropdown.Item onClick={() => handle_downloads(() => download_retailer_letter(retailer.retailerCode))}>
-                          Download Letter
+                        <Dropdown.Item
+                          onClick={() => handle_downloads(retailer.retailerCode, () => download_retailer_letter(retailer.retailerCode))}
+                          disabled={loadingDownloadRetailerCode === retailer.retailerCode}
+                        >
+                          {loadingDownloadRetailerCode === retailer.retailerCode ? (
+                            <span>
+                              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                              Downloading...
+                            </span>
+                          ) : (
+                            'Download Letter'
+                          )}
                         </Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => {
@@ -212,10 +243,9 @@ export default function Retailers({ className }) {
       {showAddRetailerModal && (
         <AddRetailerModal
           show={showAddRetailerModal}
-          onHide={() => setShowAddRetailerModal(false)}
+          handleClose={() => setShowAddRetailerModal(false)}
           userCode={user?.userCode}
           handleSave={(retailerData) => {
-            // call addRetailer from context or handle saving logic here
             addRetailer(retailerData);
             setShowAddRetailerModal(false);
           }}
@@ -223,12 +253,13 @@ export default function Retailers({ className }) {
       )}
 
       <ConfirmActionModal
-  show={showConfirmModal}
-  onHide={() => setShowConfirmModal(false)}
-  onConfirm={handleActionConfirm}
-  title={`Confirm ${currentAction}`}
-  message={`Are you sure you want to ${currentAction} this retailer?`}
-/>
+        show={showConfirmModal}
+        onHide={() => setShowConfirmModal(false)}
+        onConfirm={handleActionConfirm}
+        title={`Confirm ${currentAction}`}
+        message={`Are you sure you want to ${currentAction} this retailer?`}
+        loading={loadingAction}
+      />
     </Row>
   );
 }
