@@ -14,7 +14,8 @@ import {
   add_distributor,
   initiate_auth_letter,
   reject_auth_letter,
-  approve_auth_letter
+  approve_auth_letter,
+  list_auth_letters
 
 
 } from "../../api/otogas";
@@ -29,7 +30,8 @@ import {
  DOWNLOAD_RETAILER_LETTER,
     CLEAR_NOTIFICATION,
  DISTRIBUTOR_ERROR,
- DISTRIBUTOR_WARNING
+ DISTRIBUTOR_WARNING,
+ LIST_AUTH_LETTERS
 
 } from "../types";
 
@@ -40,6 +42,7 @@ const DistributorsState = (props) => {
     retailer_outlets: [],
     notification: null,
     loading: false,
+    auth_letters: []
 
 
 
@@ -125,6 +128,25 @@ const DistributorsState = (props) => {
     } else {
       dispatch({
         type: GET_ALL_RETAILERS,
+        payload: [],
+      });
+    }
+  }
+
+    const listAuthLetters = async (pageNumber, pageSize, params) => {
+    console.log("callled ")
+
+    const res = await list_auth_letters(pageNumber, pageSize, params);
+    console.log(res.responseObject, "res")
+    if (res.responseCode === 1) {
+      dispatch({
+        type:LIST_AUTH_LETTERS ,
+        payload: res.responseObject,
+      });
+
+    } else {
+      dispatch({
+        type: LIST_AUTH_LETTERS,
         payload: [],
       });
     }
@@ -234,7 +256,7 @@ const DistributorsState = (props) => {
         retailer_outlets: state.retailer_outlets,
         notification: state.notification,
         loading: state.loading,
-        
+        auth_letters: state.auth_letters,
         listDistributors,
         addDistributor,
         addRetailer,
@@ -242,7 +264,8 @@ const DistributorsState = (props) => {
         addRetailerOutlet,
         initiateAuthorizationLetter,
         rejectAuthorizationLetter,
-        approveAuthorizationLetter
+        approveAuthorizationLetter,
+        listAuthLetters
        
 
       }}

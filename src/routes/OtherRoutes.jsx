@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import Retailers from '../retailers/retailers';
+import AuthLetters from '../retailers/authLetters.jsx'
 import ProtectedRoute from '../components/protectedRoute.jsx';
 // render - other pages
 const OtherSamplePage = Loadable(lazy(() => import('views/SamplePage')));
@@ -38,6 +39,21 @@ const OtherRoutes = {
             {
               path: 'retailers',
               element: <ProtectedRoute element={<Retailers/>} />
+            }
+          ]
+        }
+      ]
+    },
+     {
+      path: '/',
+      element: <DashboardLayout />,
+      children: [
+        {
+          path: '/',
+          children: [
+            {
+              path: 'auth-letters',
+              element: <ProtectedRoute element={<AuthLetters/>} />
             }
           ]
         }

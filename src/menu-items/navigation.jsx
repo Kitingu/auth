@@ -26,7 +26,15 @@ const navigation = {
       type: 'item',
       icon: icons.retailers,
       url: '/retailers'
+    },
+     {
+      id: 'auth-letters',
+      title: 'Authorization Letters',
+      type: 'item',
+      icon: icons.retailers,
+      url: '/auth-letters'
     }
+
   ]
 };
 

@@ -1479,6 +1479,9 @@ export const add_update_otoshop_setup = async (formData) => {
 // https://os.protoenergy.com/api/AuthorizationLetter/search-retailers?pageNumber=1&pageSize=10&
 
 export const get_retailer_auth_letters = async (pageNumber, pageSize, params) => {
+  console.log(
+    pageNumber, pageSize, params
+  )
   try {
     const res = await axios.get(`/api/AuthorizationLetter/search-retailers?pageNumber=${pageNumber}&pageSize=${pageSize}&searchparams=${params}`)
     return res.data
@@ -1503,7 +1506,19 @@ export const get_retailer = async (retailerCode) => {
 
 export const get_all_retailers = async (pageNumber, pageSize) => {
   try {
-    const res =await axios.get( `/api/AuthorizationLetter/get-all-retailers?pageNumber=${pageNumber}&pageSize=${pageSize}`)
+    const res = await axios.get(`/api/AuthorizationLetter/get-all-retailers?pageNumber=${pageNumber}&pageSize=${pageSize}`)
+    console.log(res, "res")
+    return res.data
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
+// api/AuthorizationLetter/approval-status-letters?status=1&pageNumber=1&pageSize=10
+export const list_auth_letters = async (pageNumber, pageSize, status) => {
+  try {
+    const res = await axios.post(`/api/AuthorizationLetter/approval-status-letters?status=${status}&pageNumber=${pageNumber}&pageSize=${pageSize}`)
     console.log(res, "res")
     return res.data
   }
@@ -1516,7 +1531,7 @@ export const get_all_retailers = async (pageNumber, pageSize) => {
 export const get_all_retailers_ex = async (pageNumber, pageSize, params) => {
   console.log(pageNumber, pageSize, params, "pageNumber, pageSize, params")
   try {
-    const res =await axios.get( `/api/AuthorizationLetter/search-retailers?pageNumber=${pageNumber}&pageSize=${pageSize}&searchparams=${params}`)
+    const res = await axios.get(`/api/AuthorizationLetter/search-retailers?pageNumber=${pageNumber}&pageSize=${pageSize}&searchparams=${params}`)
     console.log(res, "rexxo")
     return res.data
   }
@@ -1622,7 +1637,7 @@ export const add_retailer_outlet = async (formData) => {
 //  'https://os.protoenergy.com/api/AuthorizationLetter/download/multiple' \
 
 export const download_multiple_authLetters = async (mbogi) => {
- try {
+  try {
     const url = 'api/AuthorizationLetter/download/multiple'
     downloadFile(url, "retailerAuthorizationLetter.pdf");
   }
