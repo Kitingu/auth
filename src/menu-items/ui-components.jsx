@@ -15,38 +15,21 @@ const uiComponents = {
           id: 'buttons',
           title: 'Users',
           type: 'item',
-          url: '/basic/buttons'
+          url: '#'
         },
         {
           id: 'badges',
           title: 'permissions',
           type: 'item',
-          url: '/basic/badges'
+          url: '#'
         },
         {
           id: 'breadcrump',
           title: 'roles',
           type: 'item',
-          url: '/basic/breadcrumb'
-        },
-        {
-          id: 'collapse',
-          title: 'Collapse',
-          type: 'item',
-          url: '/basic/collapse'
-        },
-        {
-          id: 'tabs-pills',
-          title: 'Tabs-pills',
-          type: 'item',
-          url: '/basic/tabs-pills'
-        },
-        {
-          id: 'typography',
-          title: 'Typography',
-          type: 'item',
-          url: '/basic/typography'
+          url: '#'
         }
+       
       ]
     }
   ]

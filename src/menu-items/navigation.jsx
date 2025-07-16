@@ -18,7 +18,7 @@ const navigation = {
       title: 'Distributors',
       type: 'item',
       icon: icons.distributor,
-      url: '/retailers'
+      url: '#'
     },
     {
       id: 'retailers',

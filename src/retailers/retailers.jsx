@@ -52,15 +52,19 @@ export default function Retailers({ className }) {
   const [selectedRetailers, setSelectedRetailers] = useState([]);
   const [loadingMultipleDownload, setLoadingMultipleDownload] = useState(false);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize] = useState(10); // fixed page size
+  const [hasMorePages, setHasMorePages] = useState(true);
+
   // initial load
   useEffect(() => {
-    listRetailers(1, 10, search);
+    listRetailers(1, pageSize, search);
   }, []);
 
   // debounce search
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      listRetailers(1, 10, search);
+      listRetailers(1, pageSize, search);
     }, 500);
     return () => clearTimeout(delayDebounce);
   }, [search]);
@@ -74,6 +78,17 @@ export default function Retailers({ className }) {
       setShowAlert(true);
     }
   }, [notification]);
+
+  // pagination
+  useEffect(() => {
+    listRetailers(pageNumber, pageSize, search).then((fetched) => {
+      if (fetched.length < pageSize) {
+        setHasMorePages(false);
+      } else {
+        setHasMorePages(true);
+      }
+    });
+  }, [pageNumber, search]);
 
   const handle_downloads = async (retailerCode, func) => {
     setLoadingDownloadRetailerCode(retailerCode);
@@ -181,7 +196,7 @@ export default function Retailers({ className }) {
             </Col>
           </Row>
 
-          <Table responsive striped className="mb-0">
+          <Table responsive striped className="mb-0" style={{ overflow: 'visible' }}>
             <thead>
               <tr>
                 <th>
@@ -288,6 +303,20 @@ export default function Retailers({ className }) {
               )}
             </tbody>
           </Table>
+
+          <Row className="mt-3">
+            <Col className="d-flex justify-content-between">
+              <Button variant="primary" disabled={pageNumber === 1} onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}>
+                Previous
+              </Button>
+
+              <span>Page {pageNumber}</span>
+
+              <Button variant="secondary" disabled={!hasMorePages} onClick={() => setPageNumber((prev) => prev + 1)}>
+                Next
+              </Button>
+            </Col>
+          </Row>
         </MainCard>
       </Col>
 
