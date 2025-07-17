@@ -41,7 +41,6 @@ const DistributorsState = (props) => {
     notification: null,
     loading: false,
     auth_letters: [],
-    retailer_outlets: []
   };
 
   const [state, dispatch] = useReducer(DistributorReducer, initialState);
