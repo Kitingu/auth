@@ -1146,13 +1146,26 @@ export const get_vehicle_by_customer_code = async (vehicleCode) => {
   }
 };
 
-const downloadFile = async (url, fileName = "download", fileType = "application/octet-stream") => {
+const downloadFile = async (url,
+  fileName = "download",
+  fileType = "application/octet-stream",
+  method = "GET",
+  data = null) => {
+  // try {
+  //   const res = await axios.get(url, {
+  //     responseType: "blob",
+  //     validateStatus: function (status) {
+  //       return status < 500; // Resolve for statuses below 500
+  //     },
+  //   });
+
   try {
-    const res = await axios.get(url, {
+    const res = await axios({
+      url,
+      method,
+      data,
       responseType: "blob",
-      validateStatus: function (status) {
-        return status < 500; // Resolve for statuses below 500
-      },
+      validateStatus: (status) => status < 500
     });
 
     console.log(res, "res");
@@ -1514,6 +1527,17 @@ export const get_all_retailers = async (pageNumber, pageSize) => {
     return error.response.data;
   }
 }
+export const list_retailer_outlets = async (id) => {
+  try {
+    const res = await axios.get(`/api/AuthorizationLetter/get-a-retailer-outlets${id}`)
+    console.log(res, "res<><><>")
+    return res.data
+  }
+  catch (error) {
+    console.log(error)
+    return error.response.data;
+  }
+}
 
 // api/AuthorizationLetter/approval-status-letters?status=1&pageNumber=1&pageSize=10
 export const list_auth_letters = async (pageNumber, pageSize, status) => {
@@ -1636,14 +1660,14 @@ export const add_retailer_outlet = async (formData) => {
 
 //  'https://os.protoenergy.com/api/AuthorizationLetter/download/multiple' \
 
-export const download_multiple_authLetters = async (mbogi) => {
+export const download_multiple_authLetters = async (ids) => {
   try {
-    const url = 'api/AuthorizationLetter/download/multiple'
-    downloadFile(url, "retailerAuthorizationLetter.pdf");
+    const url = 'api/AuthorizationLetter/download/multiple';
+    await downloadFile(url, "retailerAuthorizationLetter.zip", "application/zip", "POST", ids);
+  } catch (error) {
+    return error.response?.data || error.message;
   }
-  catch (error) {
-    return error.response.data;
-  }
-}
+};
+
 
 

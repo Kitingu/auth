@@ -3,6 +3,7 @@ import { lazy } from 'react';
 // project-imports
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
+import ProtectedRoute from '../components/protectedRoute.jsx';
 
 // render - dashboard pages
 const DefaultPages = Loadable(lazy(() => import('views/navigation/dashboard/Default')));
@@ -18,7 +19,7 @@ const NavigationRoutes = {
       children: [
         {
           path: '/',
-          element: <DefaultPages />
+           element: <ProtectedRoute element={<DefaultPages/>} />
         }
       ]
     }

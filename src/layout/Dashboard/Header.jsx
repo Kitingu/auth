@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // react-bootstrap
@@ -8,7 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Image from 'react-bootstrap/Image';
 import Nav from 'react-bootstrap/Nav';
 import Stack from 'react-bootstrap/Stack';
-
+import AuthContext from '../../context/auth/authContext';
 // project-imports
 import MainCard from 'components/MainCard';
 import SimpleBarScroll from 'components/third-party/SimpleBar';
@@ -21,55 +21,16 @@ import Img3 from 'assets/images/user/avatar-3.png';
 import Img4 from 'assets/images/user/avatar-4.png';
 import Img5 from 'assets/images/user/avatar-5.png';
 
-const notifications = [
-  {
-    id: 1,
-    avatar: Img1,
-    time: '2 min ago',
-    title: 'UI/UX Design',
-    description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-    date: 'Today'
-  },
-  {
-    id: 2,
-    avatar: Img2,
-    time: '1 hour ago',
-    title: 'Message',
-    description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-    date: 'Today'
-  },
-  {
-    id: 3,
-    avatar: Img3,
-    time: '2 hour ago',
-    title: 'Forms',
-    description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-    date: 'Yesterday'
-  },
-  {
-    id: 4,
-    avatar: Img4,
-    time: '12 hour ago',
-    title: 'Challenge invitation',
-    description: 'Jonny aber invites you to join the challenge',
-    actions: true,
-    date: 'Yesterday'
-  },
-  {
-    id: 5,
-    avatar: Img5,
-    time: '5 hour ago',
-    title: 'Security',
-    description: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.",
-    date: 'Yesterday'
-  }
-];
+const notifications = [];
 
 // =============================|| MAIN LAYOUT - HEADER ||============================== //
 
 export default function Header() {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster?.isDashboardDrawerOpened;
+
+  const authContext = useContext(AuthContext);
+  const { user, logout } = authContext;
 
   return (
     <header className="pc-header">
@@ -201,8 +162,11 @@ export default function Header() {
                       <Image src={Img2} alt="user-avatar" className="user-avatar wid-35" roundedCircle />
                     </div>
                     <Stack gap={1}>
-                      <h6 className="text-white mb-0">Carson Darrin 🖖</h6>
-                      <span className="text-white text-opacity-75">carson.darrin@company.io</span>
+                      <h6 className="text-white mb-0">
+                        {user?.names}
+                        🖖
+                      </h6>
+                      <span className="text-white text-opacity-75">{user?.email}</span>
                     </Stack>
                   </Stack>
                 </Dropdown.Header>
@@ -222,7 +186,7 @@ export default function Header() {
                       Change Password
                     </Dropdown.Item>
                     <div className="d-grid my-2">
-                      <Button>
+                      <Button onClick={logout}>
                         <i className="ph ph-sign-out align-middle me-2" />
                         Logout
                       </Button>

@@ -15,6 +15,8 @@ import SweetAlertWrapper from '../components/Layout/sweetAlert';
 import { download_retailer_letter, download_multiple_authLetters } from '../api/otogas';
 import AddRetailerModal from './addRetailer';
 import ConfirmActionModal from './actionsModal';
+import InitiateAuthorizationModal from './initiateAuth';
+import AddRetailerOutlet from './addRetailerOutlet';
 
 // project-imports
 import MainCard from 'components/MainCard';
@@ -29,6 +31,7 @@ export default function Retailers({ className }) {
     listRetailers,
     retailers,
     addRetailer,
+    addRetailerOutlet,
     notification,
     initiateAuthorizationLetter,
     rejectAuthorizationLetter,
@@ -53,8 +56,11 @@ export default function Retailers({ className }) {
   const [loadingMultipleDownload, setLoadingMultipleDownload] = useState(false);
 
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize] = useState(10); // fixed page size
+  const [pageSize] = useState(15); // fixed page size
   const [hasMorePages, setHasMorePages] = useState(true);
+
+  const [showInitiateModal, setShowInitiateModal] = useState(false);
+  const [initiatingRetailer, setInitiatingRetailer] = useState(null);
 
   // initial load
   useEffect(() => {
@@ -158,7 +164,7 @@ export default function Retailers({ className }) {
               <Button variant="primary" onClick={() => setShowAddRetailerModal(true)}>
                 Add Retailer
               </Button>
-              <Button
+              {/* <Button
                 variant="outline-secondary"
                 onClick={() => handle_multiple_downloads(selectedRetailers, download_multiple_authLetters)}
                 disabled={selectedRetailers.length === 0 || loadingMultipleDownload}
@@ -171,7 +177,7 @@ export default function Retailers({ className }) {
                 ) : (
                   'Export Selected'
                 )}
-              </Button>
+              </Button> */}
             </Stack>
           }
         >
@@ -199,19 +205,7 @@ export default function Retailers({ className }) {
           <Table responsive striped className="mb-0" style={{ overflow: 'visible' }}>
             <thead>
               <tr>
-                <th>
-                  <input
-                    type="checkbox"
-                    checked={retailers.length > 0 && selectedRetailers.length === retailers.length}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedRetailers(retailers.map((r) => r.retailerCode));
-                      } else {
-                        setSelectedRetailers([]);
-                      }
-                    }}
-                  />
-                </th>
+                
                 <th>Retailer ID</th>
                 <th>Business Name</th>
                 <th>Retailer Name</th>
@@ -224,13 +218,6 @@ export default function Retailers({ className }) {
               {retailers && retailers.length > 0 ? (
                 retailers.map((retailer) => (
                   <tr key={retailer.retailerCode}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedRetailers.includes(retailer.retailerCode)}
-                        onChange={() => toggleRetailerSelection(retailer.retailerCode)}
-                      />
-                    </td>
                     <td>{retailer.retailerCode}</td>
                     <td>{retailer.bussinessName}</td>
                     <td>{retailer.bussinessOwnerName}</td>
@@ -238,7 +225,7 @@ export default function Retailers({ className }) {
                     <td>{retailer.phoneNumber}</td>
                     <td>
                       <DropdownButton as={ButtonGroup} title="Actions" id={`retailer-actions-${retailer.retailerCode}`} variant="secondary">
-                        <Dropdown.Item
+                        {/* <Dropdown.Item
                           onClick={() => handle_downloads(retailer.retailerCode, () => download_retailer_letter(retailer.retailerCode))}
                           disabled={loadingDownloadRetailerCode === retailer.retailerCode}
                         >
@@ -250,10 +237,10 @@ export default function Retailers({ className }) {
                           ) : (
                             'Download Letter'
                           )}
-                        </Dropdown.Item>
+                        </Dropdown.Item> */}
                         <Dropdown.Item
                           onClick={() => {
-                            setSelectedRetailerCode(retailer.retailerCode);
+                            setSelectedRetailerCode(retailer);
                             setShowOutletModal(true);
                           }}
                         >
@@ -261,14 +248,13 @@ export default function Retailers({ className }) {
                         </Dropdown.Item>
                         <Dropdown.Item
                           onClick={() => {
-                            setCurrentRetailerCode(retailer.retailerCode);
-                            setCurrentAction('initiate');
-                            setShowConfirmModal(true);
+                            setInitiatingRetailer(retailer.retailerCode);
+                            setShowInitiateModal(true);
                           }}
                         >
                           Initiate Authorization
                         </Dropdown.Item>
-                        <Dropdown.Item
+                        {/* <Dropdown.Item
                           onClick={() => {
                             setCurrentRetailerCode(retailer.retailerCode);
                             setCurrentAction('approve');
@@ -289,7 +275,7 @@ export default function Retailers({ className }) {
 
                         <Dropdown.Item onClick={() => console.log('View outlets for', retailer.retailerCode)}>
                           View Retailer Outlets
-                        </Dropdown.Item>
+                        </Dropdown.Item> */}
                       </DropdownButton>
                     </td>
                   </tr>
@@ -340,6 +326,42 @@ export default function Retailers({ className }) {
         title={`Confirm ${currentAction}`}
         message={`Are you sure you want to ${currentAction} this retailer?`}
         loading={loadingAction}
+      />
+
+      <InitiateAuthorizationModal
+        show={showInitiateModal}
+        onHide={() => {
+          setShowInitiateModal(false);
+          setInitiatingRetailer(null);
+        }}
+        retailerCode={initiatingRetailer}
+        onSubmit={async (outletId) => {
+          try {
+            await initiateAuthorizationLetter([{ retailerCode: initiatingRetailer, outletId }]);
+            setShowInitiateModal(false);
+            setInitiatingRetailer(null);
+          } catch (err) {
+            console.error('Failed to initiate:', err);
+          }
+        }}
+      />
+
+      <AddRetailerOutlet
+        show={showOutletModal}
+        handleClose={() => {
+          setShowOutletModal(false);
+          setSelectedRetailerCode(null);
+        }}
+        retailer={selectedRetailerCode}
+        handleSave={async (outletData) => {
+          try {
+            await addRetailerOutlet({...outletData, retailerCode: selectedRetailerCode.retailerCode});
+            setShowOutletModal(false);
+            setSelectedRetailerCode(null);
+          } catch (err) {
+            console.error('Failed to add outlet:', err);
+          }
+        }}
       />
     </Row>
   );

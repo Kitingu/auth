@@ -8,7 +8,8 @@ import {
   DISTRIBUTOR_ERROR,
   DISTRIBUTOR_WARNING,
   CLEAR_NOTIFICATION,
-  LIST_AUTH_LETTERS
+  LIST_AUTH_LETTERS,
+  LIST_RETAILER_OUTLETS
 } from '../types';
 
 export default (state, action) => {
@@ -85,6 +86,13 @@ export default (state, action) => {
       return {
         ...state,
         auth_letters: action.payload.items,
+        loading: false
+      };
+
+    case LIST_RETAILER_OUTLETS:
+      return {
+        ...state,
+        retailer_outlets: action.payload[0].outlets,
         loading: false
       };
 

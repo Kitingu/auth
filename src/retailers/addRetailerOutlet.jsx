@@ -2,17 +2,19 @@ import React, { useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-const AddRetailerOutletModal = ({ show, handleClose, onSubmitData, retailerCode }) => {
+const AddRetailerOutletModal = ({ show, handleClose, handleSave, retailer }) => {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
+  console.log(retailer)
+
   useEffect(() => {
-    if (retailerCode) {
-      setValue("retailerCode", retailerCode);
+    if (retailer?.retailerCode) {
+      setValue("retailerCode", retailer.bussinessName);
     }
-  }, [retailerCode, setValue]);
+  }, [retailer?.retailerCode, setValue]);
 
   const onSubmit = (data) => {
-    onSubmitData(data);
+    handleSave(data);
     handleClose();
   };
 
@@ -24,7 +26,7 @@ const AddRetailerOutletModal = ({ show, handleClose, onSubmitData, retailerCode 
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
           <Form.Group controlId="retailerCode" className="mb-3">
-            <Form.Label>Retailer Code</Form.Label>
+            <Form.Label>Retailer </Form.Label>
             <Form.Control
               {...register("retailerCode", { required: true })}
               readOnly
