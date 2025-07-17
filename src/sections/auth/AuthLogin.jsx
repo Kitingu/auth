@@ -112,7 +112,7 @@ export default function AuthLoginForm({ className, link }) {
           <Form.Group controlId="customCheckc1">
             <Form.Check type="checkbox" label="Remember me?" defaultChecked className={`input-primary ${className || 'text-muted'}`} />
           </Form.Group>
-          <a href="#!" className={`text-secondary f-w-400 mb-0 ${className}`}>
+          <a href="/reset-password" className={`text-secondary f-w-400 mb-0 ${className}`}>
             Forgot Password?
           </a>
         </Stack>

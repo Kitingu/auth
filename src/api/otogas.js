@@ -1646,6 +1646,17 @@ export const approve_auth_letter = async (formData) => {
 
 
 
+// validate
+
+export const verify_letter = async (id) => {
+  try {
+    const res = await axios.post(`/api/AuthorizationLetter/verify-retailer?refno=${id}`);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
 
 // 'https://os.protoenergy.com/api/AuthorizationLetter/add-a-retailer-outlet' 
 export const add_retailer_outlet = async (formData) => {

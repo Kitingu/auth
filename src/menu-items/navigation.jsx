@@ -1,4 +1,20 @@
-const icons = { distributor: <i className="ph ph-warehouse" />, dashboard: <i className="ph ph-house-line" />, retailers: <i className="ph ph-shopping-cart" /> };
+// const icons = {
+//   distributor: <i className="ph ph-factory" />, // better than 'warehouse'
+//   dashboard: <i className="ph ph-gauge" />,     // better for a dashboard
+//   retailers: <i className="ph ph-storefront" />, // more specific than 'shopping-cart'
+//   letters: <i className="ph ph-file-text" />,
+//   config: <i className="ph ph-sliders-horizontal" />,
+//   edit: <i className="ph ph-pencil-simple-line" />
+// };
+
+const icons = {
+  distributor: <i className="ph ph-factory" />, // better than 'warehouse'
+  dashboard: <i className="ph ph-gauge" />,     // better for a dashboard
+  retailers: <i className="ph ph-storefront" />, // more specific than 'shopping-cart'
+  letters: <i className="ph ph-file-text" />,
+  config: <i className="ph ph-sliders-horizontal" />,
+  edit: <i className="ph ph-pencil-simple-line" />
+};
 
 const navigation = {
   id: 'group-dashboard-loading-unique',
@@ -8,38 +24,54 @@ const navigation = {
   children: [
     {
       id: 'dashboard',
-      title: 'Dashboard',
-      type: 'item',
-      icon: icons.dashboard,
-      url: '/'
-    },
-     {
-      id: 'distributors',
-      title: 'Distributors',
-      type: 'item',
-      icon: icons.distributor,
-      url: '#'
-    },
-    {
-      id: 'retailers',
       title: 'Retailers',
-      type: 'item',
-      icon: icons.retailers,
-      url: '/retailers'
-    },
-     {
-      id: 'auth-letters',
-      title: 'Authorization Letters',
-      type: 'item',
-      icon: icons.retailers,
-      url: '/auth-letters'
+      type: 'collapse',
+      icon: icons.config,
+      children: [
+        {
+          id: 'retailers',
+          title: 'Retailers',
+          type: 'item',
+          icon: icons.retailers,
+          url: '/retailers'
+        },
+        {
+          id: 'auth-letters',
+          title: 'Auth Letters',
+          type: 'item',
+          icon: icons.letters,
+          url: '/auth-letters'
+        }
+      ]
     }
-
   ]
 };
 
-export default navigation;
+    //  {
+    //   id: 'distributors',
+    //   title: 'Distributors',
+    //   type: 'item',
+    //   icon: icons.distributor,
+    //   url: '#'
+    // },
+    // {
+    //   id: 'retailers',
+    //   title: 'Retailers',
+    //   type: 'item',
+    //   icon: icons.retailers,
+    //   url: '/retailers'
+    // },
+    //  {
+    //   id: 'auth-letters',
+    //   title: 'Authorization Letters',
+    //   type: 'item',
+    //   icon: icons.retailers,
+    //   url: '/auth-letters'
+    // }
+//   ]
+// };
 
+export default navigation;
 
 // sales reps
 // garage repairs

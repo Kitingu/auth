@@ -4,16 +4,25 @@ import { lazy } from 'react';
 import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import Retailers from '../retailers/retailers';
-import AuthLetters from '../retailers/authLetters.jsx'
+import AuthLetters from '../retailers/authLetters.jsx';
 import ProtectedRoute from '../components/protectedRoute.jsx';
-// render - other pages
+
+// Pages
 const OtherSamplePage = Loadable(lazy(() => import('views/SamplePage')));
+const VerifyLetter = Loadable(lazy(() => import('../retailers/validate.jsx'))); // your verify component
 
 // ==============================|| OTHER ROUTING ||============================== //
 
 const OtherRoutes = {
   path: '/',
   children: [
+    // ✅ Public route at /123/verify
+    {
+      path: ':id/verify',
+      element: <VerifyLetter />
+    },
+
+    // ✅ Dashboard-protected routes
     {
       path: '/',
       element: <DashboardLayout />,
@@ -26,36 +35,14 @@ const OtherRoutes = {
               element: <OtherSamplePage />
             }
           ]
-        }
-      ]
-    },
-     {
-      path: '/',
-      element: <DashboardLayout />,
-      children: [
+        },
         {
-          path: '/',
-          children: [
-            {
-              path: 'retailers',
-              element: <ProtectedRoute element={<Retailers/>} />
-            }
-          ]
-        }
-      ]
-    },
-     {
-      path: '/',
-      element: <DashboardLayout />,
-      children: [
+          path: 'retailers',
+          element: <ProtectedRoute element={<Retailers />} />
+        },
         {
-          path: '/',
-          children: [
-            {
-              path: 'auth-letters',
-              element: <ProtectedRoute element={<AuthLetters/>} />
-            }
-          ]
+          path: 'auth-letters',
+          element: <ProtectedRoute element={<AuthLetters />} />
         }
       ]
     }

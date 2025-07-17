@@ -24,6 +24,13 @@ const pages = {
           type: 'item',
           url: '/register',
           target: true
+        },
+        {
+          id: 'reset-password',
+          title: 'Reset Password',
+          type: 'item',
+          url: '/reset-password',
+          target: true
         }
       ]
     }

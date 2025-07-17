@@ -5,6 +5,7 @@ import Loadable from 'components/Loadable';
 import DashboardLayout from 'layout/Dashboard';
 import AuthLayout from 'layout/Auth';
 import Retailers from '../retailers/retailers';
+import ChangePassword from '../sections/auth/resetPassword';
 
 // render - login pages
 const LoginPage = Loadable(lazy(() => import('views/auth/login/Login')));
@@ -24,9 +25,12 @@ const PagesRoutes = {
         {
           path: 'login',
           element: <LoginPage />
+        },
+
+        {
+          path: 'reset-password',
+          element: <ChangePassword />
         }
-      
-        
       ]
     }
   ]
