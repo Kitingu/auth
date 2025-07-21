@@ -36,14 +36,20 @@ const AddRetailerModal = ({ show, handleClose, handleSave, userCode }) => {
           </Form.Group>
 
           <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" {...register('email', {  })} isInvalid={!!errors.email} />
+            <Form.Control.Feedback type="invalid">Valid email is required</Form.Control.Feedback>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
             <Form.Label>Identification Number</Form.Label>
-            <Form.Control type="text" {...register('indetificationNumber', { required: true })} isInvalid={!!errors.indetificationNumber} />
+            <Form.Control type="text" {...register('indetificationNumber', {  })} isInvalid={!!errors.indetificationNumber} />
             <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3">
             <Form.Label>KRA PIN</Form.Label>
-            <Form.Control type="text" {...register('kra_Pin', { required: true })} isInvalid={!!errors.kra_Pin} />
+            <Form.Control type="text" {...register('kra_Pin', { })} isInvalid={!!errors.kra_Pin} />
             <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
           </Form.Group>
 
@@ -59,11 +65,7 @@ const AddRetailerModal = ({ show, handleClose, handleSave, userCode }) => {
             <Form.Control.Feedback type="invalid">Required</Form.Control.Feedback>
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" {...register('email', { required: true })} isInvalid={!!errors.email} />
-            <Form.Control.Feedback type="invalid">Valid email is required</Form.Control.Feedback>
-          </Form.Group>
+          
         </Modal.Body>
 
         <Modal.Footer>

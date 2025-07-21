@@ -1,16 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Card, Spinner, Alert } from 'react-bootstrap';
+import { Container, Card, Spinner, Alert, Badge, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+import Image from 'react-bootstrap/Image';
+import logo from '../../src/assets/images/proto_logo.png';
 
-// ✅ Move the API function inside or import from a shared file
 const verify_letter = async (id) => {
   try {
     const res = await axios.post(`https://os.protoenergy.com/api/AuthorizationLetter/verify-retailer?refno=${id}`);
-    console.log(res)
     return res.data;
   } catch (error) {
-    return error.response?.data || { responseCode: 0, responseMessage: 'Unknown error' };
+    return (
+      error.response?.data || {
+        responseCode: 0,
+        responseMessage: 'Unknown error occurred while verifying letter.'
+      }
+    );
+  }
+};
+
+const getStatusVariant = (status) => {
+  switch (status) {
+    case 'Approved':
+      return 'success';
+    case 'Pending':
+      return 'warning';
+    case 'Revoked':
+      return 'danger';
+    case 'Expired':
+      return 'secondary';
+    default:
+      return 'dark';
   }
 };
 
@@ -31,7 +51,6 @@ const VerifyLetter = () => {
       }
       setLoading(false);
     };
-
     fetchLetter();
   }, [id]);
 
@@ -39,7 +58,7 @@ const VerifyLetter = () => {
     return (
       <Container className="text-center mt-5">
         <Spinner animation="border" />
-        <p>Checking authorization...</p>
+        <p className="mt-3">Verifying authorization...</p>
       </Container>
     );
   }
@@ -53,27 +72,102 @@ const VerifyLetter = () => {
   }
 
   return (
-    <Container className="mt-5" style={{ maxWidth: 600 }}>
-      <Card className="p-4 shadow-sm border-success">
-        <h4 className="text-success mb-3">✅ Authorization Verified</h4>
+    <Container className="mt-5" style={{ maxWidth: 650 }}>
+      <Card className="p-4 shadow border-success">
+        {/* <div
+          style={{
+            backgroundColor: '#12173E', // Proto Blue
+            padding: '4px 8px', // smaller padding for tight fit
+            borderRadius: '8px',
+            display: 'inline-block',
+            marginBottom: '15px'
+          }}
+        >
+          <Image
+            src={logo}
+            fluid
+            className="logo logo-lg"
+            alt="Proto Energy Logo"
+            style={{
+              height: '40px', // smaller and cleaner
+              width: 'auto',
+              display: 'block'
+            }}
+          />
+        </div> */}
+
+        <h3 className="mb-4 text-uppercase">PROTO ENERGY</h3>
         <hr />
-        <p><strong>Business Name:</strong> {letter.businessName}</p>
-        <p><strong>Retailer Code:</strong> {letter.retailerCode}</p>
-        <p><strong>Owner:</strong> {letter.businessOwnerName}</p>
-        <p><strong>Phone:</strong> {letter.phoneNumber}</p>
-        <p><strong>Email:</strong> {letter.email}</p>
-        <p><strong>Letter Ref No:</strong> {letter.letter_Refno}</p>
-        <p><strong>Status:</strong> {letter.status}</p>
-        <p><strong>Initiated By:</strong> {letter.initiatedByUserCode}</p>
-        <p><strong>Initiated At:</strong> {new Date(letter.initiatedAt).toLocaleString()}</p>
+
+        <Row className="mb-2">
+          <Col sm={5}>
+            <strong>Business Name:</strong>
+          </Col>
+          <Col sm={7}>{letter.businessName}</Col>
+        </Row>
+
+        <Row className="mb-2">
+          <Col sm={5}>
+            <strong>Owner:</strong>
+          </Col>
+          <Col sm={7}>{letter.businessOwnerName}</Col>
+        </Row>
+
+        <Row className="mb-2">
+          <Col sm={5}>
+            <strong>Phone:</strong>
+          </Col>
+          <Col sm={7}>{letter.phoneNumber}</Col>
+        </Row>
+
+        <Row className="mb-2">
+          <Col sm={5}>
+            <strong>Email:</strong>
+          </Col>
+          <Col sm={7}>{letter.email}</Col>
+        </Row>
+
+        <Row className="mb-2">
+          <Col sm={5}>
+            <strong>Letter Ref No:</strong>
+          </Col>
+          <Col sm={7}>{letter.letter_Refno}</Col>
+        </Row>
+
+        <Row className="mb-2">
+          <Col sm={5}>
+            <strong>Status:</strong>
+          </Col>
+          <Col sm={7}>
+            <Badge bg={getStatusVariant(letter.status)} className="px-3 py-1 fs-6">
+              {letter.status}
+            </Badge>
+          </Col>
+        </Row>
+
+        {/* <Row className="mb-2">
+          <Col sm={5}>
+            <strong>Initiated At:</strong>
+          </Col>
+          <Col sm={7}>{new Date(letter.initiatedAt).toLocaleString()}</Col>
+        </Row> */}
+
         {letter.approvedAt && (
-          <>
-            <p><strong>Approved By:</strong> {letter.approvedByUserCode}</p>
-            <p><strong>Approved At:</strong> {new Date(letter.approvedAt).toLocaleString()}</p>
-          </>
+          <Row className="mb-2">
+            <Col sm={5}>
+              <strong>Approved At:</strong>
+            </Col>
+            <Col sm={7}>{new Date(letter.approvedAt).toLocaleString()}</Col>
+          </Row>
         )}
+
         {letter.expiryDate && (
-          <p><strong>Expires On:</strong> {new Date(letter.expiryDate).toLocaleDateString()}</p>
+          <Row className="mb-2">
+            <Col sm={5}>
+              <strong>Expires On:</strong>
+            </Col>
+            <Col sm={7}>{new Date(letter.expiryDate).toLocaleDateString()}</Col>
+          </Row>
         )}
       </Card>
     </Container>

@@ -41,6 +41,8 @@ const DistributorsState = (props) => {
     notification: null,
     loading: false,
     auth_letters: [],
+    auth_letters_count: 0,
+    auth_letters_total_pages: 0
   };
 
   const [state, dispatch] = useReducer(DistributorReducer, initialState);
@@ -235,6 +237,10 @@ const DistributorsState = (props) => {
     }
   };
 
+    const clear_notification = () => {
+      dispatch({ type: CLEAR_NOTIFICATION });
+    };
+
   return (
     <DistributorContext.Provider
       value={{
@@ -245,6 +251,8 @@ const DistributorsState = (props) => {
         notification: state.notification,
         loading: state.loading,
         auth_letters: state.auth_letters,
+        auth_letters_count: state.auth_letters_count,
+        auth_letters_total_pages: state.auth_letters_total_pages,
         listDistributors,
         addDistributor,
         addRetailer,
@@ -254,7 +262,8 @@ const DistributorsState = (props) => {
         rejectAuthorizationLetter,
         approveAuthorizationLetter,
         listAuthLetters,
-        getRetailerOutlets
+        getRetailerOutlets,
+        clear_notification
       }}
     >
       {props.children}

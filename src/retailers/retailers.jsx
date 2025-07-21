@@ -33,6 +33,7 @@ export default function Retailers({ className }) {
     addRetailer,
     addRetailerOutlet,
     notification,
+    clear_notification,
     initiateAuthorizationLetter,
     rejectAuthorizationLetter,
     approveAuthorizationLetter
@@ -122,6 +123,7 @@ export default function Retailers({ className }) {
 
   const handleConfirm = () => {
     setShowAlert(false);
+    clear_notification()
   };
 
   const handleActionConfirm = async () => {
@@ -138,6 +140,7 @@ export default function Retailers({ className }) {
       await actions[currentAction]?.();
 
       setShowConfirmModal(false);
+      clear_notification()
       setCurrentAction(null);
       setCurrentRetailerCode(null);
     } catch (err) {

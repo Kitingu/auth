@@ -6,10 +6,11 @@ import DashboardLayout from 'layout/Dashboard';
 import Retailers from '../retailers/retailers';
 import AuthLetters from '../retailers/authLetters.jsx';
 import ProtectedRoute from '../components/protectedRoute.jsx';
+import VerifyLetter from '../retailers/validate.jsx';
 
 // Pages
 const OtherSamplePage = Loadable(lazy(() => import('views/SamplePage')));
-const VerifyLetter = Loadable(lazy(() => import('../retailers/validate.jsx'))); // your verify component
+// const VerifyLetter = Loadable(lazy(() => import('../retailers/validate.jsx'))); // your verify component
 
 // ==============================|| OTHER ROUTING ||============================== //
 

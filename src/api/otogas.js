@@ -1529,7 +1529,7 @@ export const get_all_retailers = async (pageNumber, pageSize) => {
 }
 export const list_retailer_outlets = async (id) => {
   try {
-    const res = await axios.get(`/api/AuthorizationLetter/get-a-retailer-outlets${id}`)
+    const res = await axios.get(`/api/AuthorizationLetter/get-retailer-outlets?retailerCode=${id}`)
     console.log(res, "res<><><>")
     return res.data
   }

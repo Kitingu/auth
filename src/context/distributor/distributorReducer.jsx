@@ -86,6 +86,8 @@ export default (state, action) => {
       return {
         ...state,
         auth_letters: action.payload.items,
+        auth_letters_count: action.payload.totalCount,
+        auth_letters_total_pages: action.payload.totalPages,
         loading: false
       };
 

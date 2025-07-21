@@ -7,11 +7,12 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { download_retailer_letter, download_multiple_authLetters } from '../api/otogas';
+import Pagination from '../components/Layout/Pagination.jsx';
 
 export default function LettersStatus() {
   const [activeTab, setActiveTab] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(10); // Number of items per page
   const [totalPages, setTotalPages] = useState(1);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [currentLetterId, setCurrentLetterId] = useState(null);
@@ -19,9 +20,17 @@ export default function LettersStatus() {
   const [loadingAction, setLoadingAction] = useState(false);
   const [loadingDownload, setLoadingDownload] = useState(null);
   const [selectedApprovedIds, setSelectedApprovedIds] = useState([]);
-const [exporting, setExporting] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const distributorContext = useContext(DistributorContext);
-  const { listAuthLetters, auth_letters, approveAuthorizationLetter, rejectAuthorizationLetter } = distributorContext;
+  const {
+    listAuthLetters,
+    auth_letters,
+    approveAuthorizationLetter,
+    rejectAuthorizationLetter,
+    clear_notification,
+    auth_letters_total_pages,
+    auth_letters_count
+  } = distributorContext;
 
   useEffect(() => {
     setPageNumber(1);
@@ -81,6 +90,7 @@ const [exporting, setExporting] = useState(false);
         reject: () => rejectAuthorizationLetter([currentLetterId])
       };
       await actionMap[currentAction]?.();
+      clear_notification();
       setShowConfirmModal(false);
       setCurrentAction(null);
       setCurrentLetterId(null);
@@ -224,17 +234,13 @@ const [exporting, setExporting] = useState(false);
             <tbody>{renderTableRows()}</tbody>
           </Table>
 
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <Button variant="primary" disabled={pageNumber === 1} onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}>
-              Previous
-            </Button>
-            <span>
-              Page {pageNumber} of {totalPages}
-            </span>
-            <Button variant="secondary" disabled={pageNumber >= totalPages} onClick={() => setPageNumber((prev) => prev + 1)}>
-              Next
-            </Button>
-          </div>
+          <Pagination
+            currentPage={pageNumber}
+            totalPages={auth_letters_total_pages}
+            setCurrentPage={setPageNumber}
+            itemsPerPage={pageSize}
+            totalItems={auth_letters_count}
+          />
 
           <ConfirmActionModal
             show={showConfirmModal}

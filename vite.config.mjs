@@ -54,7 +54,7 @@ export default defineConfig(({ mode }) => {
         }
       }
     },
-    base: './', // ✅ key fix for Netlify/static hosting
+    base: '/', // ✅ key fix for Netlify/static hosting
     plugins: [react(), jsconfigPaths()]
   };
 });
