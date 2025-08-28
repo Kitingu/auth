@@ -118,7 +118,7 @@ export default function AuthLoginForm({ className, link }) {
         </Stack>
 
         <div className="text-center mt-4">
-          <Button type="submit" className="shadow px-sm-4" disabled={loading}>
+          <Button  variant="primary" type="submit" className="shadow px-sm-4" disabled={loading}>
             {loading ? (
               <>
                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

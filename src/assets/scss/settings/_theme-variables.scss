@@ -11,6 +11,7 @@
 
   // Navbar
   --pc-sidebar-background: #12173E;
+
   --pc-sidebar-color: #a9b7d0;
   --pc-sidebar-color-rgb: #{to-rgb(#a9b7d0)};
   --pc-sidebar-active-color: #{$secondary};
@@ -54,8 +55,8 @@ $yellow: $yellow-500;
 $green: $green-500;
 $cyan: $cyan-500;
 
-$primary-text: $blue-600;
-$secondary-text: $gray-600;
+$primary-text: $brand-color1;
+$secondary-text: $brand-color2;
 $success-text: $green-600;
 $info-text: $cyan-700;
 $warning-text: $yellow-700;
@@ -63,7 +64,7 @@ $danger-text: $red-600;
 $light-text: $gray-600;
 $dark-text: $gray-700;
 
-$primary-bg-subtle: $blue-100;
+$primary-bg-subtle: $brand-color1;
 $secondary-bg-subtle: $gray-100;
 $success-bg-subtle: $green-100;
 $info-bg-subtle: $cyan-100;
@@ -72,7 +73,7 @@ $danger-bg-subtle: $red-100;
 $light-bg-subtle: mix($gray-100, $white);
 $dark-bg-subtle: $gray-400;
 
-$primary-border-subtle: $blue-200;
+$primary-border-subtle: $brand-color1;
 $secondary-border-subtle: $gray-200;
 $success-border-subtle: $green-200;
 $info-border-subtle: $cyan-200;
@@ -87,6 +88,6 @@ $brand-colors: (
 );
 $preset-colors: (
   preset-1: (
-    primary: $blue-500
+    primary: $brand-color1
   )
 );

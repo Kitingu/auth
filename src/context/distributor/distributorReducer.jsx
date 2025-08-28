@@ -9,7 +9,10 @@ import {
   DISTRIBUTOR_WARNING,
   CLEAR_NOTIFICATION,
   LIST_AUTH_LETTERS,
-  LIST_RETAILER_OUTLETS
+  LIST_RETAILER_OUTLETS,
+  GET_A_RETAILER,
+  LIST_DISTRIBUTOR_OUTLETS,
+  LIST_DIST_AUTH_LETTERS
 } from '../types';
 
 export default (state, action) => {
@@ -82,6 +85,13 @@ export default (state, action) => {
         loading: false
       };
 
+    case GET_A_RETAILER:
+      return{
+        ...state,
+        retailer: action.payload,
+        loading: false
+      }
+
     case LIST_AUTH_LETTERS:
       return {
         ...state,
@@ -91,6 +101,15 @@ export default (state, action) => {
         loading: false
       };
 
+    case LIST_DIST_AUTH_LETTERS:
+      return {
+        ...state,
+        distributor_auth_letters: action.payload.items,
+        distributor_auth_letters_count: action.payload.totalCount,
+        distributor_auth_letters_total_pages: action.payload.totalPages,
+        loading: false  
+      };
+
     case LIST_RETAILER_OUTLETS:
       return {
         ...state,
@@ -98,6 +117,13 @@ export default (state, action) => {
         loading: false
       };
 
+
+    case LIST_DISTRIBUTOR_OUTLETS:
+      return {
+        ...state,
+        distributor_outlets: action.payload,
+        loading: false
+      };
     default:
       return state;
   }

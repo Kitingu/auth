@@ -1,15 +1,20 @@
-import React, { useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import React, { useEffect } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import { useForm } from 'react-hook-form';
 
 const AddRetailerOutletModal = ({ show, handleClose, handleSave, retailer }) => {
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors }
+  } = useForm();
 
-  console.log(retailer)
+  console.log(retailer);
 
   useEffect(() => {
     if (retailer?.retailerCode) {
-      setValue("retailerCode", retailer.bussinessName);
+      setValue('retailerCode', retailer.bussinessName);
     }
   }, [retailer?.retailerCode, setValue]);
 
@@ -27,55 +32,60 @@ const AddRetailerOutletModal = ({ show, handleClose, handleSave, retailer }) => 
         <Modal.Body>
           <Form.Group controlId="retailerCode" className="mb-3">
             <Form.Label>Retailer </Form.Label>
-            <Form.Control
-              {...register("retailerCode", { required: true })}
-              readOnly
-            />
+            <Form.Control {...register('retailerCode', { required: true })} readOnly />
           </Form.Group>
 
           <Form.Group controlId="outletName" className="mb-3">
             <Form.Label>Outlet Name</Form.Label>
-            <Form.Control
-              {...register("outletName", { required: true })}
-              placeholder="Enter outlet name"
-            />
+            <Form.Control {...register('outletName', { required: true })} placeholder="Enter outlet name" />
             {errors.outletName && <small className="text-danger">Required</small>}
           </Form.Group>
 
-          <Form.Group controlId="outletLocation" className="mb-3">
+          {/* <Form.Group controlId="outletLocation" className="mb-3">
             <Form.Label>Outlet Location</Form.Label>
             <Form.Control
               {...register("outletLocation", { required: true })}
               placeholder="Enter location"
             />
             {errors.outletLocation && <small className="text-danger">Required</small>}
+          </Form.Group> */}
+
+          <Form.Group controlId="outletLocation" className="mb-3">
+            <Form.Label>Outlet Location</Form.Label>
+            <Form.Control
+              {...register('outletLocation', { required: true })}
+              placeholder="Enter location"
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue('outletLocation', value);
+                setValue('smallAreaCode', value); // set smallAreaCode to outletLocation
+              }}
+            />
+            {errors.outletLocation && <small className="text-danger">Required</small>}
           </Form.Group>
+
+          {/* Hidden field for smallAreaCode */}
+          <input type="hidden" {...register('smallAreaCode', { required: true })} />
 
           <Form.Group controlId="latitude" className="mb-3">
             <Form.Label>Latitude</Form.Label>
-            <Form.Control
-              type="number"
-              step="any"
-              {...register("latitude", { required: true })}
-              placeholder="Enter latitude"
-            />
+            <Form.Control type="number" step="any" {...register('latitude', { required: true })} placeholder="Enter latitude" />
             {errors.latitude && <small className="text-danger">Required</small>}
           </Form.Group>
 
           <Form.Group controlId="longitude" className="mb-3">
             <Form.Label>Longitude</Form.Label>
-            <Form.Control
-              type="number"
-              step="any"
-              {...register("longitude", { required: true })}
-              placeholder="Enter longitude"
-            />
+            <Form.Control type="number" step="any" {...register('longitude', { required: true })} placeholder="Enter longitude" />
             {errors.longitude && <small className="text-danger">Required</small>}
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-          <Button variant="primary" type="submit">Save</Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="primary" type="submit">
+            Save
+          </Button>
         </Modal.Footer>
       </Form>
     </Modal>

@@ -72,6 +72,7 @@ export const ResetPassword = async (password) => {
 export const GetUsers = async () => {
     try {
         const res = await axios.get("/otogas/Authentication/GetAllUsers");
+        console.log(res)
         return res.data;
     } catch (error) {
         return error.response.data;

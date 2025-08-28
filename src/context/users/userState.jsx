@@ -58,6 +58,9 @@ const UserState = props => {
         if (users.responseCode === 1) {
             dispatch({ type: GET_USERS, payload: users.responseObject });
         }
+        else{
+              dispatch({ type: GET_USERS, payload: []});
+        }
 
     }
 

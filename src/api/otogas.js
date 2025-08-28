@@ -1168,7 +1168,7 @@ const downloadFile = async (url,
       validateStatus: (status) => status < 500
     });
 
-    console.log(res, "res");
+    console.log(res.headers, "responce");
 
     // Handle status codes
     if (res.status === 200) {
@@ -1515,6 +1515,17 @@ export const get_retailer = async (retailerCode) => {
   }
 }
 
+// 
+export const get_a_distributor = async (retailerCode) => {
+  try {
+    const res = await axios.get(`api/AuthorizationLetter/get-a-retailer?retailorCode=${retailerCode}`)
+    return res.data
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
 // api/AuthorizationLetter/get-all-retailers?pageNumber=1&pageSize=10'
 
 export const get_all_retailers = async (pageNumber, pageSize) => {
@@ -1529,7 +1540,19 @@ export const get_all_retailers = async (pageNumber, pageSize) => {
 }
 export const list_retailer_outlets = async (id) => {
   try {
-    const res = await axios.get(`/api/AuthorizationLetter/get-retailer-outlets?retailerCode=${id}`)
+    const res = await axios.get(`/api/AuthorizationLetter/get-a-retailer-outlets${id}`)
+    console.log(res, "res<><><>")
+    return res.data
+  }
+  catch (error) {
+    console.log(error)
+    return error.response.data;
+  }
+}
+
+export const list_distributor_outlets = async (id) => {
+  try {
+    const res = await axios.get(`/api/AuthorizationLetter/get-distributor-outlet?distributorCode=${id}`)
     console.log(res, "res<><><>")
     return res.data
   }
@@ -1543,6 +1566,17 @@ export const list_retailer_outlets = async (id) => {
 export const list_auth_letters = async (pageNumber, pageSize, status) => {
   try {
     const res = await axios.post(`/api/AuthorizationLetter/approval-status-letters?status=${status}&pageNumber=${pageNumber}&pageSize=${pageSize}`)
+    console.log(res, "res")
+    return res.data
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+  // 'https://os.protoenergy.com/api/AuthorizationLetter/status-distributor-letter?status=1&page=1&pageSize=1' \
+export const list_dist_auth_letters = async (pageNumber, pageSize, status) => {
+  try {console.log(pageNumber, pageSize, status, "pageNumber, pageSize, status")
+    const res = await axios.post(`/api/AuthorizationLetter/status-distributor-letter?status=${status}&pageNumber=${pageNumber}&pageSize=${pageSize}`)
     console.log(res, "res")
     return res.data
   }
@@ -1564,9 +1598,13 @@ export const get_all_retailers_ex = async (pageNumber, pageSize, params) => {
   }
 }
 
+// api/AuthorizationLetter/get-all-distributors?page=1&pageSize=10'
 export const list_distributors = async (pageNumber, pageSize) => {
+  console.log(pageNumber, pageSize, "pageNumber, pageSize")
   try {
-    const res = `/api/AuthorizationLetter/get-all-distributors?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    const url = `/api/AuthorizationLetter/get-all-distributors?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    const res = await axios.post(url);
+    console.log(res, "rexx")
     return res.data
   }
   catch (error) {
@@ -1585,6 +1623,16 @@ export const download_retailer_letter = async (retailerCode) => {
     return error.response.data;
   }
 }
+// zationLetter/download-authorisation-letter/3'
+export const download_distributor_letter = async (distributorCode) => {
+  try {
+    const url = `api/AuthorizationLetter/download-authorisation-letter/${distributorCode}`;
+    downloadFile(url, "retailerAuthorizationLetter.pdf");
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
 
 
 // 'https://os.protoenergy.com/api/AuthorizationLetter/add-retailer' 
@@ -1592,6 +1640,41 @@ export const download_retailer_letter = async (retailerCode) => {
 export const add_retailer = async (formData) => {
   try {
     const res = await axios.post("/api/AuthorizationLetter/add-retailer", formData);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
+
+
+ export const update_retailer = async (formData) => {
+  //   // api/AuthorizationLetter/update-retailer'
+  try {
+    const res = await axios.post("/api/AuthorizationLetter/update-retailer", formData);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
+ export const update_distributor = async (formData) => {
+  //   // api/AuthorizationLetter/update-retailer'
+  try {
+    const res = await axios.post("/api/AuthorizationLetter/update-retailer", formData);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
+// get_a_retailer
+export const get_a_retailer = async (retailerCode) => {
+  try {
+    const res = await axios.get(`/api/AuthorizationLetter/get-a-retailer?retailorCode=${retailerCode}`);
     return res.data;
   }
   catch (error) {
@@ -1621,8 +1704,31 @@ export const initiate_auth_letter = async (formData) => {
     return error.response.data;
   }
 }
+// AuthorizationLetter/initiate-distributor-letter'
+export const initiate_distributor_letter = async(formData) => {
+  console.log(formData, "formData in initiate_distributor_letter")
+  try {
+    const res = await axios.post("/api/AuthorizationLetter/initiate-distributor-letter", formData);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+  
+}
 
 export const reject_auth_letter = async (formData) => {
+  try {
+    const res = await axios.post("/api/AuthorizationLetter/letters-reject", formData);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
+// AuthorizationLetter/reject-distributor-letter
+export const reject_dist_auth_letter = async (formData) => {
   try {
     const res = await axios.post("/api/AuthorizationLetter/letters-reject", formData);
     return res.data;
@@ -1636,6 +1742,17 @@ export const reject_auth_letter = async (formData) => {
 export const approve_auth_letter = async (formData) => {
   try {
     const res = await axios.post("/api/AuthorizationLetter/letters-approve", formData);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
+// AuthorizationLetter/approve-distributor-letter
+export const approve_dist_auth_letter = async (formData) => {
+  try {
+    const res = await axios.post("/api/AuthorizationLetter/approve-distributor-letter", formData);
     return res.data;
   }
   catch (error) {
@@ -1669,6 +1786,17 @@ export const add_retailer_outlet = async (formData) => {
   }
 }
 
+//  'https://os.protoenergy.com/api/AuthorizationLetter/add-distributor-outlet' \
+export const add_distributor_outlet = async (formData) => {
+  try {
+    const res = await axios.post("/api/AuthorizationLetter/add-distributor-outlet", formData);
+    return res.data;
+  }
+  catch (error) {
+    return error.response.data;
+  }
+}
+
 //  'https://os.protoenergy.com/api/AuthorizationLetter/download/multiple' \
 
 export const download_multiple_authLetters = async (ids) => {
@@ -1678,7 +1806,18 @@ export const download_multiple_authLetters = async (ids) => {
   } catch (error) {
     return error.response?.data || error.message;
   }
+}
+
+// api/AuthorizationLetter/download-distributor-approved-letter/multiple
+export const download_multiple_dist_authLetters = async (ids) => {
+  try {
+    const url = 'api/AuthorizationLetter/download-distributor-approved-letter/multiple';
+    await downloadFile(url, "retailerAuthorizationLetter.zip", "application/zip", "POST", ids);
+  } catch (error) {
+    return error.response?.data || error.message;
+  }
 };
+
 
 
 

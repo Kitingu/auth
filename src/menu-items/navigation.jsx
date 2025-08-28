@@ -43,7 +43,48 @@ const navigation = {
           url: '/auth-letters'
         }
       ]
+    },
+
+    {
+      id: 'distributors',
+      title: 'Distributors',
+      type: 'collapse',
+      icon: icons.config,
+      children: [
+        {
+          id: 'distributors',
+          title: 'distributors',
+          type: 'item',
+          icon: icons.distributor,
+          url: '/distributors'
+        },
+        {
+          id: 'dist-letters',
+          title: 'Auth Letters',
+          type: 'item',
+          icon: icons.letters,
+          url: '/distributor-letters'
+        }
+      ]
+    },
+     {
+      id: 'documents',
+      title: 'Documents',
+      type: 'collapse',
+      icon: icons.config,
+      children: [
+        {
+          id: 'docs',
+          title: 'documents',
+          type: 'item',
+          icon: icons.distributor,
+          url: '/documents'
+        },
+       
+      ]
     }
+
+    
   ]
 };
 

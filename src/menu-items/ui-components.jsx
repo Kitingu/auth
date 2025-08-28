@@ -15,19 +15,19 @@ const uiComponents = {
           id: 'buttons',
           title: 'Users',
           type: 'item',
-          url: '#'
+          url: '/users'
         },
         {
           id: 'badges',
           title: 'permissions',
           type: 'item',
-          url: '#'
+          url: '/users'
         },
         {
           id: 'breadcrump',
           title: 'roles',
           type: 'item',
-          url: '#'
+          url: '/roles'
         }
        
       ]

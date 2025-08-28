@@ -7,6 +7,7 @@ import UserState from './context/users/userState.jsx';
 import DistributorState from './context/distributor/distributorState.jsx';
 import AlertState from './context/alerts/alertState.jsx';
 import AuthContext from './context/auth/authContext.jsx';
+import DocumentsState from './context/documents/documentsState.jsx';
 // ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
 function App() {
@@ -24,9 +25,11 @@ function App() {
 
       <UserState>
         <DistributorState>
+          <DocumentsState>
           <AlertState>
             <RouterProvider router={router} />
           </AlertState>
+          </DocumentsState>
         </DistributorState>
       </UserState>
 

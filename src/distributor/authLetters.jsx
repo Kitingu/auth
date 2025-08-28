@@ -6,10 +6,10 @@ import ConfirmActionModal from './actionsModal';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { download_retailer_letter, download_multiple_authLetters } from '../api/otogas';
+import { download_retailer_letter, download_multiple_dist_authLetters } from '../api/otogas';
 import Pagination from '../components/Layout/Pagination.jsx';
 
-export default function LettersStatus() {
+export default function DistributorLettersStatus() {
   const [activeTab, setActiveTab] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10); // Number of items per page
@@ -23,10 +23,10 @@ export default function LettersStatus() {
   const [exporting, setExporting] = useState(false);
   const distributorContext = useContext(DistributorContext);
   const {
-    listAuthLetters,
-    auth_letters,
-    approveAuthorizationLetter,
-    rejectAuthorizationLetter,
+    listDistributorLetters,
+    distributor_auth_letters,
+    approveDistributorAuthorizationLetter,
+    rejectDistributorAuthorizationLetter,
     clear_notification,
     auth_letters_total_pages,
     auth_letters_count
@@ -38,7 +38,7 @@ export default function LettersStatus() {
   }, [activeTab]);
 
   useEffect(() => {
-    listAuthLetters(pageNumber, pageSize, activeTab);
+    listDistributorLetters(pageNumber, pageSize, activeTab);
   }, [activeTab, pageNumber]);
 
   const formatDate = (dateStr) => (dateStr ? new Date(dateStr).toLocaleString() : '—');
@@ -55,7 +55,9 @@ export default function LettersStatus() {
       return;
     }
     try {
-      const response = await fetch(`https://os.protoenergy.com/api/AuthorizationLetter/download/${letterId}`, {
+        // download_distributor_letter
+        //     const url = `api/AuthorizationLetter/download-authorisation-letter/${distributorCode}`;
+      const response = await fetch(`https://os.protoenergy.com/api/AuthorizationLetter/download-authorisation-letter/${letterId}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`
@@ -92,7 +94,7 @@ export default function LettersStatus() {
   const handleSelectAll = (event) => {
     const isChecked = event.target.checked;
     if (isChecked) {
-      const approvedIds = auth_letters.map((l) => l.id);
+      const approvedIds = distributor_auth_letters.map((l) => l.id);
       setSelectedApprovedIds(approvedIds);
     } else {
       setSelectedApprovedIds([]);
@@ -104,7 +106,7 @@ export default function LettersStatus() {
 
     setExporting(true);
     try {
-      await download_multiple_authLetters(selectedApprovedIds);
+      await download_multiple_dist_authLetters(selectedApprovedIds);
     } catch (err) {
       console.error('Bulk download failed', err);
     } finally {
@@ -117,15 +119,15 @@ export default function LettersStatus() {
     setLoadingAction(true);
     try {
       const actionMap = {
-        approve: () => approveAuthorizationLetter([currentLetterId]),
-        reject: () => rejectAuthorizationLetter([currentLetterId])
+        approve: () => approveDistributorAuthorizationLetter([currentLetterId]),
+        reject: () => rejectDistributorAuthorizationLetter([currentLetterId])
       };
       await actionMap[currentAction]?.();
       clear_notification();
       setShowConfirmModal(false);
       setCurrentAction(null);
       setCurrentLetterId(null);
-      listAuthLetters(pageNumber, pageSize, activeTab);
+      listDistributorLetters(pageNumber, pageSize, activeTab);
     } catch (err) {
       console.error(err);
     } finally {
@@ -134,7 +136,7 @@ export default function LettersStatus() {
   };
 
   const renderTableRows = () => {
-    if (!auth_letters) {
+    if (!distributor_auth_letters) {
       return (
         <tr>
           <td colSpan="10" className="text-center">
@@ -145,7 +147,7 @@ export default function LettersStatus() {
       );
     }
 
-    if (auth_letters.length === 0) {
+    if (distributor_auth_letters.length === 0) {
       return (
         <tr>
           <td colSpan="10" className="text-center">
@@ -155,7 +157,7 @@ export default function LettersStatus() {
       );
     }
 
-    return auth_letters.map((letter) => (
+    return distributor_auth_letters.map((letter) => (
       <tr key={letter.id}>
         {activeTab === 1 && (
           <td>
@@ -247,11 +249,11 @@ export default function LettersStatus() {
                     <Form.Check
                       type="checkbox"
                       onChange={handleSelectAll}
-                      checked={auth_letters.length > 0 && selectedApprovedIds.length === auth_letters.length}
+                      checked={distributor_auth_letters.length > 0 && selectedApprovedIds.length === distributor_auth_letters.length}
                     />
                   </th>
                 )}
-                <th>Retailer Code</th>
+                <th>Distributor Code</th>
                 <th>Business Name</th>
                 <th>Owner</th>
                 <th>Phone</th>

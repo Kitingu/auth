@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { useContext, useState, useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 // react-bootstrap
 import Table from 'react-bootstrap/Table';
 import Stack from 'react-bootstrap/Stack';
@@ -22,14 +22,16 @@ import AddRetailerOutlet from './addRetailerOutlet';
 import MainCard from 'components/MainCard';
 import DistributorContext from '../context/distributor/distributorContext';
 import AuthContext from '../context/auth/authContext';
+import ViewRetailer from './viewRetailer';
 
 export default function Retailers({ className }) {
   const distributorContext = useContext(DistributorContext);
   const authContext = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const {
     listRetailers,
     retailers,
+    updateRetailer,
     addRetailer,
     addRetailerOutlet,
     notification,
@@ -42,7 +44,11 @@ export default function Retailers({ className }) {
 
   const [selectedRetailerCode, setSelectedRetailerCode] = useState(null);
   const [showOutletModal, setShowOutletModal] = useState(false);
-  const [showAddRetailerModal, setShowAddRetailerModal] = useState(false);
+
+  const [showRetailerModal, setShowRetailerModal] = useState(false);
+  const [retailerModalMode, setRetailerModalMode] = useState('create'); // 'create' | 'update'
+  const [retailerToEdit, setRetailerToEdit] = useState(null);
+
   const [search, setSearch] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState({ text: '', type: '' });
@@ -66,15 +72,29 @@ export default function Retailers({ className }) {
   // initial load
   useEffect(() => {
     listRetailers(1, pageSize, search);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // debounce search
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       listRetailers(1, pageSize, search);
+      setPageNumber(1);
     }, 500);
     return () => clearTimeout(delayDebounce);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
+
+  useEffect(() => {
+    listRetailers(pageNumber, pageSize, search).then((fetched) => {
+      if (Array.isArray(fetched) && fetched.length < pageSize) {
+        setHasMorePages(false);
+      } else {
+        setHasMorePages(true);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNumber, search]);
 
   useEffect(() => {
     if (notification) {
@@ -85,17 +105,6 @@ export default function Retailers({ className }) {
       setShowAlert(true);
     }
   }, [notification]);
-
-  // pagination
-  useEffect(() => {
-    listRetailers(pageNumber, pageSize, search).then((fetched) => {
-      if (fetched.length < pageSize) {
-        setHasMorePages(false);
-      } else {
-        setHasMorePages(true);
-      }
-    });
-  }, [pageNumber, search]);
 
   const handle_downloads = async (retailerCode, func) => {
     setLoadingDownloadRetailerCode(retailerCode);
@@ -123,7 +132,7 @@ export default function Retailers({ className }) {
 
   const handleConfirm = () => {
     setShowAlert(false);
-    clear_notification()
+    clear_notification();
   };
 
   const handleActionConfirm = async () => {
@@ -140,9 +149,11 @@ export default function Retailers({ className }) {
       await actions[currentAction]?.();
 
       setShowConfirmModal(false);
-      clear_notification()
+      clear_notification();
       setCurrentAction(null);
       setCurrentRetailerCode(null);
+      // refresh list after action
+      listRetailers(pageNumber, pageSize, search);
     } catch (err) {
       console.error(`Failed to ${currentAction} retailer:`, err);
       setAlertMessage({ text: `Failed to ${currentAction} retailer.`, type: 'error' });
@@ -156,6 +167,19 @@ export default function Retailers({ className }) {
     setSelectedRetailers((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
   };
 
+  // open modal helpers
+  const openCreateModal = () => {
+    setRetailerModalMode('create');
+    setRetailerToEdit(null);
+    setShowRetailerModal(true);
+  };
+
+  const openEditModal = (retailer) => {
+    setRetailerModalMode('update');
+    setRetailerToEdit(retailer);
+    setShowRetailerModal(true);
+  };
+
   return (
     <Row>
       <Col sm={12}>
@@ -164,7 +188,7 @@ export default function Retailers({ className }) {
           subheader={<p className="mb-0">List of all registered retailers</p>}
           secondary={
             <Stack direction="horizontal" gap={2}>
-              <Button variant="primary" onClick={() => setShowAddRetailerModal(true)}>
+              <Button variant="primary" onClick={openCreateModal}>
                 Add Retailer
               </Button>
               {/* <Button
@@ -208,7 +232,6 @@ export default function Retailers({ className }) {
           <Table responsive striped className="mb-0" style={{ overflow: 'visible' }}>
             <thead>
               <tr>
-                
                 <th>Retailer ID</th>
                 <th>Business Name</th>
                 <th>Retailer Name</th>
@@ -241,6 +264,9 @@ export default function Retailers({ className }) {
                             'Download Letter'
                           )}
                         </Dropdown.Item> */}
+
+                        <Dropdown.Item onClick={() => openEditModal(retailer)}>Edit Retailer</Dropdown.Item>
+
                         <Dropdown.Item
                           onClick={() => {
                             setSelectedRetailerCode(retailer);
@@ -249,6 +275,7 @@ export default function Retailers({ className }) {
                         >
                           Add Retailer Outlets
                         </Dropdown.Item>
+
                         <Dropdown.Item
                           onClick={() => {
                             setInitiatingRetailer(retailer.retailerCode);
@@ -257,6 +284,11 @@ export default function Retailers({ className }) {
                         >
                           Initiate Authorization
                         </Dropdown.Item>
+
+                        <Dropdown.Item onClick={() => navigate(`/retailers/view/${retailer.retailerCode}`)}>
+                          View Retailer Outlets
+                        </Dropdown.Item>
+
                         {/* <Dropdown.Item
                           onClick={() => {
                             setCurrentRetailerCode(retailer.retailerCode);
@@ -274,10 +306,6 @@ export default function Retailers({ className }) {
                           }}
                         >
                           Reject
-                        </Dropdown.Item>
-
-                        <Dropdown.Item onClick={() => console.log('View outlets for', retailer.retailerCode)}>
-                          View Retailer Outlets
                         </Dropdown.Item> */}
                       </DropdownButton>
                     </td>
@@ -309,15 +337,25 @@ export default function Retailers({ className }) {
         </MainCard>
       </Col>
 
-      {/* Modal */}
-      {showAddRetailerModal && (
+      {/* Create / Update Modal */}
+      {showRetailerModal && (
         <AddRetailerModal
-          show={showAddRetailerModal}
-          handleClose={() => setShowAddRetailerModal(false)}
+          show={showRetailerModal}
+          handleClose={() => {
+            setShowRetailerModal(false);
+            setRetailerToEdit(null);
+          }}
+          mode={retailerModalMode}
+          initialData={retailerToEdit}
           userCode={user?.userCode}
-          handleSave={(retailerData) => {
-            addRetailer(retailerData);
-            setShowAddRetailerModal(false);
+          onSubmitForm={async (payload, mode) => {
+            if (mode === 'update') {
+              await updateRetailer(payload);
+            } else {
+              await addRetailer(payload);
+            }
+            // refresh after save
+            listRetailers(pageNumber, pageSize, search);
           }}
         />
       )}
@@ -343,6 +381,7 @@ export default function Retailers({ className }) {
             await initiateAuthorizationLetter([{ retailerCode: initiatingRetailer, outletId }]);
             setShowInitiateModal(false);
             setInitiatingRetailer(null);
+            listRetailers(pageNumber, pageSize, search);
           } catch (err) {
             console.error('Failed to initiate:', err);
           }
@@ -358,7 +397,7 @@ export default function Retailers({ className }) {
         retailer={selectedRetailerCode}
         handleSave={async (outletData) => {
           try {
-            await addRetailerOutlet({...outletData, retailerCode: selectedRetailerCode.retailerCode});
+            await addRetailerOutlet({ ...outletData, retailerCode: selectedRetailerCode.retailerCode });
             setShowOutletModal(false);
             setSelectedRetailerCode(null);
           } catch (err) {

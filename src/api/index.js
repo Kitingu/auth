@@ -35,7 +35,7 @@ axios.interceptors.response.use(
         if (error.response && error.response.status === 403) {
             // debugger
             // Redirect to forbidden page
-            window.location.href = "/forbidden"; // or use a router push method if you are using a router
+            window.location.href = "/403"; // or use a router push method if you are using a router
         }
         return Promise.reject(error);
     },
