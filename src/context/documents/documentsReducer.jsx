@@ -6,7 +6,8 @@ import {
   LIST_DOCUMENTS_BY_DEPARTMENT,
   DOCUMENTS_ERROR,
   CLEAR_NOTIFICATION,
-  DOCUMENTS_WARNING
+  DOCUMENTS_WARNING,
+  LIST_TRACKED_DOCUMENTS
 } from '../types';
 
 export default (state, action) => {
@@ -28,6 +29,13 @@ export default (state, action) => {
       return {
         ...state,
         documents: action.payload,
+        loading: false
+      };
+
+    case LIST_TRACKED_DOCUMENTS:
+       return {
+        ...state,
+        tracked_documents: action.payload,
         loading: false
       };
     case ADD_DEPARTMENT:

@@ -23,12 +23,14 @@ import {
   LIST_DOCUMENTS_BY_DEPARTMENT,
   DOCUMENTS_ERROR,
   CLEAR_NOTIFICATION,
+  LIST_TRACKED_DOCUMENTS,
   DOCUMENTS_WARNING
 } from '../types';
 
 const DocumentsState = (props) => {
   const initialState = {
     documents: [],
+    tracked_documents: [],
     departments: [],
     notification: null
   };
@@ -54,7 +56,6 @@ const DocumentsState = (props) => {
       });
     }
   };
-
 
   const addDocument = async (document) => {
     const res = await add_department(document);
@@ -156,10 +157,10 @@ const DocumentsState = (props) => {
     }
   };
 
-  const listTrackedDocuments = async () => {
+  const listDocuments = async () => {
     const res = await get_docs_per_user_department();
     if (res.responseCode === 1) {
-      console.log(res, "")
+      console.log(res, '');
       dispatch({
         type: LIST_DOCUMENTS,
         payload: res.responseObject
@@ -172,9 +173,25 @@ const DocumentsState = (props) => {
     }
   };
 
+  const listTrackedDocuments = async () => {
+    const res = await get_all_tracked_documents();
+    if (res.responseCode === 1) {
+      console.log(res, '');
+      dispatch({
+        type: LIST_TRACKED_DOCUMENTS,
+        payload: res.responseObject
+      });
+    } else {
+      dispatch({
+        type: LIST_TRACKED_DOCUMENTS,
+        payload: []
+      });
+    }
+  };
+
   const listDepartments = async () => {
     const res = await list_departments();
-    console.log(res)
+    console.log(res);
     if (res.responseCode === 1) {
       dispatch({
         type: LIST_DEPARTMENTS,
@@ -200,11 +217,13 @@ const DocumentsState = (props) => {
         departments: state.departments,
         notification: state.notification,
         loading: state.loading,
+        tracked_documents: state.tracked_documents,
         addDepartment,
         assignDepartmentToUser,
         addDocumentDefinition,
         addDocumentTracking,
         renewDocumentTracking,
+        listDocuments,
         listTrackedDocuments,
         listDepartments,
         addDocument,
